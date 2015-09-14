@@ -8,7 +8,8 @@ function getRequestInfo() {
     },
     function(response) {
     	document.getElementById("container").innerHTML = "";
-    	response.msg.forEach(arrangeRequestInfo);
+      var sorted_arr = response.msg.sort(sortArr);
+      sorted_arr.forEach(arrangeRequestInfo);
     });
 }
 
@@ -18,3 +19,15 @@ function arrangeRequestInfo(request) {
 	newDiv.textContent = request.url + " ... " + request.loadtime + " milliseconds";
 	document.getElementById("container").appendChild(newDiv);
 }
+
+function sortArr(a, b) {
+  if (a.loadtime < b.loadtime) {
+    return 1;
+  }
+  if (a.loadtime > b.loadtime) {
+    return -1;
+  }
+  return 0;
+}
+
+
