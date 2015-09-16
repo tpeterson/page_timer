@@ -16,7 +16,7 @@ function getRequestInfo() {
 function arrangeRequestInfo(request) {
 	var newDiv = document.createElement("div");
 	var timestamp = new Date(request.timestamp);
-	newDiv.textContent = request.url + " ... " + request.loadtime + " milliseconds";
+	newDiv.textContent = request.url + " ... " + request.loadtime + " milliseconds & " + request.headers;
 	document.getElementById("container").appendChild(newDiv);
 }
 
