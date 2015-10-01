@@ -20,7 +20,8 @@ chrome.webRequest.onBeforeRequest.addListener(
     urls: [
       "http://*/*", "https://*/*"
     ]
-  });
+  }
+);
 
 chrome.webRequest.onCompleted.addListener(
   function collectRequestLoadedInfo(info) {
@@ -46,7 +47,8 @@ chrome.webRequest.onCompleted.addListener(
       "http://*/*", "https://*/*"
     ]
   },
-  ["responseHeaders"]);
+  ["responseHeaders"]
+);
 
 
 chrome.runtime.onMessage.addListener(
@@ -60,7 +62,8 @@ chrome.runtime.onMessage.addListener(
       network_info_after = [];
       */
     }
-  });
+  }
+);
 
 function calculateLoadTime(new_request) {
   var load_time = "";
@@ -71,7 +74,6 @@ function calculateLoadTime(new_request) {
   });
   return Math.round(load_time);
 }
-
 
 function itemizeResponseHeaders(response_headers) {
   var headers = [];
@@ -104,7 +106,8 @@ chrome.webRequest.onSendHeaders.addListener(
       "http://*/*", "https://*/*"
     ]
   },
-  ["requestHeaders"]);
+  ["requestHeaders"]
+);
 
 function checkRequestHeaders(new_request) {
   var headers = [];
