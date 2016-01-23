@@ -20,7 +20,8 @@ chrome.webRequest.onBeforeRequest.addListener(
     urls: [
       "http://*/*", "https://*/*"
     ]
-  });
+  }
+);
 
 chrome.webRequest.onCompleted.addListener(
   function collectRequestLoadedInfo(info) {
@@ -29,7 +30,8 @@ chrome.webRequest.onCompleted.addListener(
       timestamp: "",
       loadtime: "",
       id: "",
-      headers: ""
+      headers: "", 
+      domain: ""
     };
 
     request_info.url = info.url;
@@ -38,6 +40,7 @@ chrome.webRequest.onCompleted.addListener(
     //request_info.headers = itemizeResponseHeaders(info.responseHeaders);
     request_info.headers = checkRequestHeaders(info);
     request_info.loadtime = calculateLoadTime(request_info);
+    request_info.domain = getDomain(info.url);
 
     network_info_after.push(request_info);
   },
@@ -46,7 +49,8 @@ chrome.webRequest.onCompleted.addListener(
       "http://*/*", "https://*/*"
     ]
   },
-  ["responseHeaders"]);
+  ["responseHeaders"]
+);
 
 
 chrome.runtime.onMessage.addListener(
@@ -55,12 +59,13 @@ chrome.runtime.onMessage.addListener(
       sendResponse({
         msg: network_info_after
       });
-      /* CLEAR VARS HOLDING REQUEST ARRAYS
+      // CLEAR REQUEST ARRAYS BUT MAKES IT SO REQUEST INFO CAN ONLY BE VIEWED ONCE BEFORE NEEDING TO RELOAD
       network_info_before = [];
       network_info_after = [];
-      */
+      network_info_during  = [];
     }
-  });
+  }
+);
 
 function calculateLoadTime(new_request) {
   var load_time = "";
@@ -71,7 +76,6 @@ function calculateLoadTime(new_request) {
   });
   return Math.round(load_time);
 }
-
 
 function itemizeResponseHeaders(response_headers) {
   var headers = [];
@@ -104,7 +108,8 @@ chrome.webRequest.onSendHeaders.addListener(
       "http://*/*", "https://*/*"
     ]
   },
-  ["requestHeaders"]);
+  ["requestHeaders"]
+);
 
 function checkRequestHeaders(new_request) {
   var headers = [];
@@ -123,4 +128,35 @@ function checkRequestHeaders(new_request) {
     } 
   });
   return headers;
+}
+
+function getDomain(link) {
+  var url_arr = link.split("");
+  var non_http_arr = [];
+  
+  if (url_arr[4] === "s") {
+    var exp_arr = ["h","t","t","p","s",":","/","/"];
+
+    url_arr.forEach(function(x) {
+      if (x === exp_arr[0]) {
+        exp_arr.splice(0,1);
+       } else {
+        non_http_arr.push(x);
+       } 
+    });
+
+    return non_http_arr.join("").split("/")[0];
+  } else {
+    var exp_arr = ["h","t","t","p",":","/","/"];
+
+    url_arr.forEach(function(x) {
+     if (x === exp_arr[0]) {
+       exp_arr.splice(0,1);
+      } else {
+       non_http_arr.push(x);
+       } 
+    });
+
+    return non_http_arr.join("").split("/")[0];
+  }  
 }
